@@ -1,6 +1,9 @@
 var request = require('request'),
 	ScraperPromise = require('./ScraperPromise');
 
+const userAgent = `
+  Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; Googlebot/2.1; +http://www.google.com/bot.html) Chrome/64.0.3282.140 Safari/537.36
+`
 /**
  * An abstract scraper, this class should not be used directly as a
  *   scraper, instead a concrete scraper should inherit or use this
@@ -53,8 +56,14 @@ AbstractScraper.prototype = {
 	 * @public
 	 */
 	get: function(url, callback) {
-		var that = this;
-		request.get(url, function processGet(error, response, body) {
+    var that = this;
+    const options = {
+      url: url,
+      headers: {
+        'User-Agent': userAgent
+      }
+    }
+		request.get(options, function processGet(error, response, body) {
 			if (error) {
 				callback(error);
 			} else {
